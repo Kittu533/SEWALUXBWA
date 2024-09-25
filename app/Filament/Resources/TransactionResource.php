@@ -24,6 +24,67 @@ class TransactionResource extends Resource
         return $form
             ->schema([
                 //
+                Forms\Components\TextInput::make('name')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('phone_number')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('trx_id')
+                    ->required()
+                    ->maxLength(255),
+
+                Forms\Components\TextArea::make('address')
+                    ->required()
+                    ->maxLength(1024),
+
+                Forms\Components\TextInput::make('total_amount')
+                    ->required()
+                    ->numeric()
+                    ->prefix('IDR'),
+
+                Forms\Components\TextInput::make('duration')
+                    ->required()
+                    ->numeric()
+                    ->prefix('Days')
+                    ->maxLength(255),
+
+                Forms\Components\Select::make('product_id')
+                    ->relationship('product', 'name')
+                    ->searchable()
+                    ->preload()
+                    ->required(),
+
+                Forms\Components\Select::make('store_id')
+                    ->relationship('store', 'name')
+                    ->searchable()
+                    ->preload()
+                    ->required(),
+
+                Forms\Components\DatePicker::make('started_at')
+                    ->required(),
+
+                Forms\Components\DatePicker::make('ended_at')
+                    ->required(),
+
+                Forms\Components\Select::make('delivery_type')
+                    ->options([
+                        'pickup' => 'pickup store',
+                        'home_delivery' => 'Home Delivery',
+                    ])
+                    ->required(),
+                Forms\Components\FileUpload::make('proof')
+                    ->required()
+                    ->openable()
+                    ->image(),
+
+                Forms\Components\Select::make('is_paid')
+                    ->options([
+                        true => 'Paid',
+                        false => 'Not Paid',
+                    ])
+                    ->required(),
+
             ]);
     }
 
@@ -31,7 +92,27 @@ class TransactionResource extends Resource
     {
         return $table
             ->columns([
-                //
+                //Menampilkan DaTA
+                Tables\Columns\TextColumn::make('name')
+                    ->searchable(),
+
+                Tables\Columns\TextColumn::make('trx_id')
+                    ->searchable(),
+
+                Tables\Columns\TextColumn::make('total_amount')
+                    ->numeric()
+                    ->prefix('Rp '),
+
+                Tables\Columns\IconColumn::make('is_paid')
+                    ->boolean()
+                    ->trueColor('success')
+                    ->falseColor('danger')
+                    ->trueIcon('heroicon-o-check-circle')
+                    ->falseIcon('heroicon-o-x-circle')
+                    ->label('Sudah Bayar ?'),
+
+                Tables\Columns\TextColumn::make('product.name')
+
             ])
             ->filters([
                 //
